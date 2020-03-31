@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!-- Import base spring boot logging configuration. -->
+
+    <!-- START BASE CONFIG -->
+    <!-- Copied from org/springframework/boot/logging/logback/base.xml -->
+    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+    <property name="LOG_FILE" value="${LOG_FILE:-${LOG_PATH:-${LOG_TEMP:-${java.io.tmpdir:-/tmp}}}/spring.log}"/>
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
+    <include resource="org/springframework/boot/logging/logback/file-appender.xml" />
+    <!-- END BASE CONFIG -->
+
+    <springProperty name="logstashHost" source="app.logstash.host"/>
+
+    <!-- Include application name in json output. See https://github.com/logstash/logstash-logback-encoder#context-fields -->
+    <springProperty scope="context" name="application_name" source="spring.application.name"/>
+
+    <appender name="STASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <destination>${logstashHost}</destination>
+
+        <!-- encoder is required -->
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
+    </appender>
+
+    <appender name="ASYNC_STASH" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="STASH" />
+    </appender>
+
+    <appender name="ASYNC_BASE" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="FILE" />
+    </appender>
+
+    <!-- Add logstash appender to the root logger -->
+    <root level="INFO">
+        <appender-ref ref="ASYNC_BASE" />
+        <appender-ref ref="ASYNC_STASH" />
+    </root>
+</configuration>

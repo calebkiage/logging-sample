@@ -1,0 +1,5 @@
+app:
+  logstash:
+    host: localhost:45600
+
+spring.application.name: logging-sample
