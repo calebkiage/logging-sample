@@ -26,14 +26,14 @@
         <appender-ref ref="STASH" />
     </appender>
 
-    <appender name="ASYNC_BASE" class="ch.qos.logback.classic.AsyncAppender">
-        <appender-ref ref="CONSOLE" />
+    <appender name="ASYNC_FILE" class="ch.qos.logback.classic.AsyncAppender">
         <appender-ref ref="FILE" />
     </appender>
 
     <!-- Add logstash appender to the root logger -->
     <root level="INFO">
-        <appender-ref ref="ASYNC_BASE" />
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="ASYNC_FILE" />
         <appender-ref ref="ASYNC_STASH" />
     </root>
 </configuration>
